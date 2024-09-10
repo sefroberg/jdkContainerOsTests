@@ -548,7 +548,7 @@ function s2iLocal() {
     if [ "x$COMMIT_HASH" != x ] ; then
       #cd into the source folder and checkout the koji source based on the known commit
       pushd upload/src
-         git checkout 048d32f1a311ae97c87bd885dd17cac6dddb5f94
+         git checkout $COMMIT_HASH
       popd
     fi
     cat $DF.nw1 | tee $DF
