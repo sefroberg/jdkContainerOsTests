@@ -931,7 +931,7 @@ EOF
 
 }
 
-function setAlgorithmTestsVars {
+function setupAlgorithmTesting {
   # Skipping the FIPS tests if $OTOOL_CONTAINERQA_RUNCRYPTO is set to anything other than "true"
   if [ "$OTOOL_CONTAINERQA_RUNCRYPTO" != "true"  ] ; then
     echo "$SKIPPED8"
@@ -944,30 +944,12 @@ function setAlgorithmTestsVars {
 
 function listCryptoAlgorithms() {
   skipIfJreExecution
-  # curl downloads the needed test files inside of the container, compiles them and runs them
   runOnBaseDirBash "echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
                     javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list algorithms"
 }
 
-function listCryptoAlgorithmsWithFipsSet() {
-  skipIfJreExecution
-  # curl downloads the needed test files inside of the container, compiles them and runs them
-  runOnBaseDirBashRootUser "update-crypto-policies --set FIPS && \
-                            echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
-                            javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list algorithms"
-}
-
 function listCryptoProviders() {
   skipIfJreExecution
-  # curl downloads the needed test files inside of the container, compiles them and runs them
   runOnBaseDirBash "echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
                     javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list providers"
-}
-
-function listCryptoProvidersWithFipsSet() {
-  skipIfJreExecution
-  # curl downloads the needed test files inside of the container, compiles them and runs them
-  runOnBaseDirBashRootUser "update-crypto-policies --set FIPS && \
-                            echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
-                            javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list providers"
 }
