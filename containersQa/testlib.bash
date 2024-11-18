@@ -77,6 +77,7 @@ function pretest() {
   SKIPPED5="!skipped! reproducers security now must be enabled by OTOOL_RUN_SECURITY_REPRODUCERS=true"
   SKIPPED6="!skipped! rhel 7 based images do not support this functionality."
   SKIPPED7="!skipped! rhel 7 Os version of Podman does not support this functionality."
+  SKIPPED8="!skipped! Skipping FIPS algorithms/providers tests."
   export DISPLAY=:0
   if [ "x$OTOOL_CONTAINER_RUNTIME" = "x" ] ; then
     export PD_PROVIDER=podman
@@ -931,9 +932,12 @@ EOF
 }
 
 function setAlgorithmTestsVars {
-  # Turning the tests off for now as there are random failure that are slowing testing for respins.
-  echo $SKIPPED3
-  exit
+  # Skipping the FIPS tests if $OTOOL_CONTAINERQA_RUNCRYPTO is set to anything other than "true"
+  if [ "$OTOOL_CONTAINERQA_RUNCRYPTO" != "true"  ] ; then
+    echo "$SKIPPED8"
+    exit
+  fi
+
   checkAlgorithmsCode=`cat $LIBCQA_SCRIPT_DIR/CheckAlgorithms.java | sed -e "s/'//g"` # the ' characters are escaping and making problems, deleting them here
   cipherListCode=`cat $LIBCQA_SCRIPT_DIR/CipherList.java`
 }
