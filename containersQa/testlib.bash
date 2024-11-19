@@ -942,6 +942,23 @@ function setupAlgorithmTesting {
   cipherListCode=`cat $LIBCQA_SCRIPT_DIR/CipherList.java`
 }
 
+function isHostAndContainerCryptoIdentical() {
+  hostCryptoPolicy=`update-crypto-policies --show`
+  containerCryptoPolicy=`runOnBaseDirBash "update-crypto-policies --show"`
+
+  echo "The crypto policy on host system: $hostCryptoPolicy"
+  echo "The crypto policy in container: $containerCryptoPolicy"
+}
+
+function doesManuallySettingFipsCrash() {
+  set +e
+  runOnBaseDirBashRootUser "update-crypto-policies --set FIPS"
+  containerReturnCode="$?"
+  set -e
+
+  echo "The container returned $containerReturnCode as its exit code when manually setting FIPS."
+}
+
 function listCryptoAlgorithms() {
   skipIfJreExecution
   runOnBaseDirBash "echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
