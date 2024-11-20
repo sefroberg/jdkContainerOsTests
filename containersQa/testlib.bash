@@ -942,21 +942,50 @@ function setupAlgorithmTesting {
   cipherListCode=`cat $LIBCQA_SCRIPT_DIR/CipherList.java`
 }
 
-function isHostAndContainerCryptoIdentical() {
+function logHostAndContainerCryptoPolicy() {
   hostCryptoPolicy=`update-crypto-policies --show`
   containerCryptoPolicy=`runOnBaseDirBash "update-crypto-policies --show"`
 
-  echo "The crypto policy on host system: $hostCryptoPolicy"
-  echo "The crypto policy in container: $containerCryptoPolicy"
+  # host is RHEL in FIPS mode, the crypto policies on host and in the container should match
+  if [ "$OTOOL_OS_NAME" == "el" ] && [ "$OTOOL_cryptosetup" == "fips" ] ; then
+    if [ "$hostCryptoPolicy" == "$containerCryptoPolicy" ] ; then
+      echo "Crypto policy on RHEL host is the same as in the container ($containerCryptoPolicy), which was expected."
+    else
+      echo "Crypto policy on RHEL host ($hostCryptoPolicy) is not the same as in the container ($containerCryptoPolicy), which was unexpected."
+    fi
+
+  # host is not RHEL in FIPS mode, the crypto policies may or may not match, just logging them
+  else
+    echo "Crypto policy on host is $hostCryptoPolicy, and in container $containerCryptoPolicy."
+  fi
 }
 
-function doesManuallySettingFipsCrash() {
+function validateManualSettingFipsWithNoCrash() {
   set +e
   runOnBaseDirBashRootUser "update-crypto-policies --set FIPS"
   containerReturnCode="$?"
   set -e
 
-  echo "The container returned $containerReturnCode as its exit code when manually setting FIPS."
+  # host is RHEL in FIPS mode, the command should fail (return non-zero exit code) in container
+  if [ "$OTOOL_OS_NAME" == "el" ] && [ "$OTOOL_cryptosetup" == "fips" ] ; then
+    if [ "$containerReturnCode" != 0 ] ; then
+      echo "RHEL host is in FIPS, container returned $containerReturnCode, which was expected."
+    else
+      echo "RHEL host is in FIPS, container returned $containerReturnCode, which was unexpected, expected not zero."
+    fi
+
+  # host is RHEL not in FIPS mode, the command shouldn't fail
+  elif [ "$OTOOL_OS_NAME" == "el" ] ; then
+    if [ "$containerReturnCode" == 0 ] ; then
+      echo "RHEL host is not in FIPS, container returned $containerReturnCode, which was expected."
+    else
+      echo "RHEL host is not in FIPS, container returned $containerReturnCode, which was unexpected, expected zero."
+    fi
+
+  # other variants (for example Fedora), the behavior is just logged
+  else
+    echo "Non-RHEL host, undefined FIPS, container returned $containerReturnCode."
+  fi
 }
 
 function listCryptoAlgorithms() {

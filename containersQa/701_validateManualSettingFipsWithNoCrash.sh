@@ -19,4 +19,4 @@ parseArguments "$@"
 processArguments
 setup
 setupAlgorithmTesting
-doesManuallySettingFipsCrash 2>&1| tee $REPORT_FILE
+validateManualSettingFipsWithNoCrash 2>&1| tee $REPORT_FILE
