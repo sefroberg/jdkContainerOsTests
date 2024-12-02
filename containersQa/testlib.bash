@@ -990,12 +990,16 @@ function validateManualSettingFipsWithNoCrash() {
 
 function listCryptoAlgorithms() {
   skipIfJreExecution
+  set +x
   runOnBaseDirBash "echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
                     javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list algorithms"
+  set -x
 }
 
 function listCryptoProviders() {
   skipIfJreExecution
+  set +x
   runOnBaseDirBash "echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && \
                     javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list providers"
+  set -x
 }
