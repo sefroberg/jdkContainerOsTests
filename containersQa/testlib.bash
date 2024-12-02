@@ -992,8 +992,8 @@ function listCryptoAlgorithms() {
   skipIfJreExecution
   set +x
   commandAlgorithms="echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list algorithms"
-  runOnBaseDirBash "$commandAlgorithms" 2>&1| tee $REPORT_FILE
   echo "runOnBaseDirBash $commandAlgorithms"
+  runOnBaseDirBash "$commandAlgorithms" 2>&1| tee $REPORT_FILE
   set -x
 }
 
@@ -1001,7 +1001,7 @@ function listCryptoProviders() {
   skipIfJreExecution
   set +x
   commandProviders="echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list providers"
-  runOnBaseDirBash "$commandProviders" 2>&1| tee $REPORT_FILE
   echo "runOnBaseDirBash $commandProviders"
+  runOnBaseDirBash "$commandProviders" 2>&1| tee $REPORT_FILE
   set -x
 }
