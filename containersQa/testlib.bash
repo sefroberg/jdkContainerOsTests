@@ -991,21 +991,17 @@ function validateManualSettingFipsWithNoCrash() {
 function listCryptoAlgorithms() {
   skipIfJreExecution
   set +x
-
   commandAlgorithms="echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list algorithms"
-  runOnBaseDirBash "$commandAlgorithms"
-  echo "runOnBaseDirBash $commandAlgorithms" >> $REPORT_DIR/global-stdouterr.log
-
+  runOnBaseDirBash "$commandAlgorithms" 2>&1| tee $REPORT_FILE
+  echo "runOnBaseDirBash $commandAlgorithms"
   set -x
 }
 
 function listCryptoProviders() {
   skipIfJreExecution
   set +x
-
   commandProviders="echo '$checkAlgorithmsCode' > /tmp/CheckAlgorithms.java && echo '$cipherListCode' > /tmp/CipherList.java && javac -d /tmp /tmp/CheckAlgorithms.java /tmp/CipherList.java && java -cp /tmp CheckAlgorithms list providers"
-  runOnBaseDirBash "$commandProviders"
-  echo "runOnBaseDirBash $commandProviders" >> $REPORT_DIR/global-stdouterr.log
-
+  runOnBaseDirBash "$commandProviders" 2>&1| tee $REPORT_FILE
+  echo "runOnBaseDirBash $commandProviders"
   set -x
 }
